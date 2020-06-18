@@ -41,7 +41,6 @@ module.exports = {
   modules: [
     // Doc: https://axios.nuxtjs.org/usage
     '@nuxtjs/axios',
-    '@nuxtjs/auth',
     '@nuxtjs/pwa',
     'semantic-ui-vue/nuxt',
     '@nuxtjs/apollo'
@@ -70,7 +69,7 @@ module.exports = {
   */
   axios: {
     // See https://github.com/nuxt-community/axios-module#options
-    baseURL: 'http://127.0.0.1:1337/'
+    // baseURL: 'http://127.0.0.1:1337/'
 
   },
   /*

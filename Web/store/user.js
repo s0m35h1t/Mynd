@@ -1,13 +1,16 @@
 
 export const state =  () => ({
-    user: ''
+    user: null,
+    is_auth: false
 })
 
 export const mutations = {
     login(state, user) {
         state.user = user
+        state.is_auth = true
     },
     logout() {
-        state
+        state.user = user
+        state.is_auth = false
     }
 }

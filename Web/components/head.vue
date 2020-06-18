@@ -7,7 +7,7 @@
           Mynd
         </a>
       </sui-container>
-      <sui-menu-menu position="right">
+      <sui-menu-menu position="right" >
         <a @click.native="toggleJoin" is="sui-menu-item" class="header">
           Join
         </a>
@@ -31,6 +31,7 @@
               placeholder="E-mail address"
               icon="user"
               icon-position="left"
+              v-model="userLogin.identifier"
             />
           </sui-form-field>
           <sui-form-field>
@@ -39,9 +40,12 @@
               placeholder="Password"
               icon="lock"
               icon-position="left"
+              v-model="userLogin.password"
             />
           </sui-form-field>
-          <sui-button size="large" fluid>Login</sui-button>
+          <sui-button size="large" type="button" @click.prevent="signin" fluid
+            >Login</sui-button
+          >
         </sui-segment>
       </sui-form>
 
@@ -79,16 +83,18 @@
 </template>
 
 <script>
+import axios from "axios";
+import { mapMutations } from "vuex";
 export default {
   name: "Head",
   data() {
     return {
-      join: false,
-      login: false,
-      usr: {
-        username: "",
+      userLogin: {
+        identifier: "",
         password: ""
       },
+      join: false,
+      login: false,
       current: null,
       options: [
         {
@@ -103,14 +109,16 @@ export default {
     };
   },
   methods: {
-    async userLogin() {
-      try {
-        let response = await this.$auth.loginWith("local", {
-          data: this.login
-        });
-        console.log(response);
-      } catch (err) {
-        console.log(err);
+    async signin() {
+      const data = {
+        identifier: this.userLogin.identifier,
+        password: this.userLogin.password
+      };
+      const res = await axios.post("http://localhost:1337/auth/local", data);
+      if (res.data.jwt) {
+        localStorage.setItem("authToken", res.data.jwt);
+        this.$store.commit("user/login", res.data.user);
+        this.login = !this.login;
       }
     },
     toggleJoin() {
@@ -141,5 +149,6 @@ export default {
 }
 a {
   color: #5a4fdc;
+  cursor: pointer;
 }
 </style>
