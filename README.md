@@ -22,3 +22,23 @@ pip3 install flask-cors
 pip3 install flask-login
 pip3 install flask-jwt
 ```
+
+Node packages Installation
+```
+cd Web/
+npm install
+cd myndApi/
+npm install
+```
+
+Run frontend server
+```
+cd Web/
+npm run dev
+```
+
+Run backend server
+```
+cd myndApi/
+npm run dev
+```
