@@ -3,9 +3,20 @@
     <sui-grid centered :columns="2">
       <sui-grid-column>
         <sui-card-group :items-per-row="3" stackable>
-          <sui-card class="pcrd" v-for="post in posts" :key="post.id">
+          <sui-card class="pcrd" v-for="post in posts" :key="post.id"
+            v-bind:style="{
+              overflow: 'hidden',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundImage: 'url(http://localhost:1337' + post.image.url + ')'
+            }"
+          >
             <a :href="'/post/' + post.id">
-            <sui-image :src="'http://localhost:1337' + post.image.url" />
+            <sui-image :src="'http://localhost:1337' + post.image.url"
+              v-bind:style="{
+                visibility: 'hidden'
+              }"
+            />
             </a>
           </sui-card>
         </sui-card-group>
