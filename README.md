@@ -14,7 +14,6 @@ Mynd is a social networking website where users can share and view images accord
 ## Installations
 
 ## SQL packages Installation
-* Mysql installation
 ```bash
 echo 'deb http://repo.mysql.com/apt/ubuntu/ trusty mysql-5.7-dmr' | sudo tee -a /etc/apt/sources.list
 sudo apt-get update
