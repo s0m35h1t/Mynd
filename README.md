@@ -4,7 +4,7 @@
 Mynd is a social networking website where users can share and view images according to topics.
 
 #### Article
-* An article covering the story behind the creation of Mynd can be found [HERE] (https://medium.com/@edin93/my-holberton-school-portfolio-project-story-f53f1a0d8334)
+* An article covering the story behind the creation of Mynd can be found [HERE](https://medium.com/@edin93/my-holberton-school-portfolio-project-story-f53f1a0d8334)
 
 #### Authors LinkedIn profiles
 * Mariem Matri [LinkedIn](https://www.linkedin.com/in/mariem-matri-249620178/)
@@ -64,16 +64,18 @@ npm run dev
 
 ## Related projects
 
-* [Pinterest] (https://www.pinterest.com)
-* [Imgur] (https://www.imgur.com)
-* [Instagram] (https://www.instagram.com)
+* [Pinterest](https://www.pinterest.com)
+* [Imgur](https://www.imgur.com)
+* [Instagram](https://www.instagram.com)
 
 ## Licensing
 
 * The content of this project itself is licensed under (the Creative Commons Attribution 3.0 Unported license) [https://creativecommons.org/licenses/by/3.0/], and the underlying source code used to format and display that content is licensed under the (MIT license) [https://github.com/github/choosealicense.com/blob/gh-pages/LICENSE.md].
 
 ## Screenshots
-
+* Image 1
 ![alt text](https://edin93.github.io/mynd_landing_page/images/feature2.png)
+* Image 2
 ![alt text](https://edin93.github.io/mynd_landing_page/images/feature3.png)
+* Image 3
 ![alt text](https://edin93.github.io/mynd_landing_page/images/feature1.png)
