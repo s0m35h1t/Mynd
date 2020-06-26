@@ -3,19 +3,44 @@
     <sui-grid centered :columns="3">
       <sui-grid-column v-if="user">
         <sui-card-group :items-per-row="3" stackable>
-          <sui-card v-for="post in user.posts" :key="post.id">
-            <a :href="'/post/' + post.id">
-            <sui-image :src="'http://localhost:1337' + post.image.url" />
-            </a>
+          <sui-card v-for="post in user.posts" :key="post.id"
+            
+            :style="{
+              overflow: 'hidden',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundImage: 'url(http://localhost:1337' + post.image.url || '/uploads/_07348acc6e.png?91490' + ')'
+            }"
+              @click="$router.push('/post/'+post.id)"
+          >
+            <!-- <a :href="'/post/' + post.id"> -->
+              <sui-image
+              v-bind:style="{
+                visibility: 'hidden'
+              }"
+                :src="'http://localhost:1337' + post.image.url"
+              />
+            <!-- </a> -->
           </sui-card>
         </sui-card-group>
+
+
+
+
+
 
         <sui-rail position="left">
           <sui-segment>
             <sui-image
-              :src="
-                'http://localhost:1337' + user.profile_img.formats.small.url
-              "
+              :style="{
+                overflow: 'hidden',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundImage:
+                  'url(http://localhost:1337' +
+                  user.profile_img.formats.thumbnail.url +
+                  ')'
+              }"
               class="pimg"
               circular
               centered

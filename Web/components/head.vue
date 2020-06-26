@@ -2,89 +2,69 @@
   <div>
     <sui-menu fixed>
       <sui-container>
-        <a is="sui-menu-item" href="/" class="header">
+        <nuxt-link is="sui-menu-item" to="/" class="header">
           <img src="../assets/images/logo.png" class="logo" />
           Mynd
-        </a>
+        </nuxt-link>
       </sui-container>
-      <sui-menu-menu position="right" >
-        <a @click.native="toggleJoin" is="sui-menu-item" class="header">
+      <sui-menu-menu position="right">
+        <nuxt-link
+          to="/join"
+          is="sui-menu-item"
+          v-if="!isAuthenticated"
+          class="header"
+        >
           Join
-        </a>
-        <a @click.native="toggleLogin" is="sui-menu-item" class="header">
+        </nuxt-link>
+        <nuxt-link
+          to="/login"
+          is="sui-menu-item"
+          v-if="!isAuthenticated"
+          class="header"
+        >
           Login
-        </a>
+        </nuxt-link>
+          <a
+            @click="logout"
+           is="sui-menu-item"
+            v-if="isAuthenticated"
+            class="header"
+          >
+            Logout
+          </a>
+          <nuxt-link
+            class="avt"
+            :to="'/' + loggedInUser.id"
+            v-if="isAuthenticated"
+          >
+            <sui-image
+              class="avt"
+              v-if="isAuthenticated"
+              :style="{
+                overflow: 'hidden',
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundImage:
+                  'url(http://localhost:1337' +
+                  loggedInUser.profile_img.formats.thumbnail.url +
+                  ')'
+              }"
+              src=""
+              @click="reUser"
+              avatar
+            />
+          </nuxt-link>
         <sui-menu-item>
           <sui-input transparent icon="search" placeholder="Search..." />
         </sui-menu-item>
       </sui-menu-menu>
     </sui-menu>
-
-    <sui-modal size="mini" v-model="login">
-      <sui-modal-header>Login</sui-modal-header>
-
-      <sui-form>
-        <sui-segment>
-          <sui-form-field>
-            <sui-input
-              type="email"
-              placeholder="E-mail address"
-              icon="user"
-              icon-position="left"
-              v-model="userLogin.identifier"
-            />
-          </sui-form-field>
-          <sui-form-field>
-            <sui-input
-              type="password"
-              placeholder="Password"
-              icon="lock"
-              icon-position="left"
-              v-model="userLogin.password"
-            />
-          </sui-form-field>
-          <sui-button size="large" type="button" @click.prevent="signin" fluid
-            >Login</sui-button
-          >
-        </sui-segment>
-      </sui-form>
-
-      <sui-message>New to Mynd? <a @click="toggle">Sign Up</a> </sui-message>
-    </sui-modal>
-    <sui-modal size="mini" v-model="join">
-      <sui-modal-header>Join Mynd</sui-modal-header>
-
-      <sui-form>
-        <sui-segment>
-          <sui-form-field>
-            <sui-input type="email" placeholder="E-mail address" />
-          </sui-form-field>
-          <sui-form-field>
-            <sui-input type="username" placeholder="Username" />
-          </sui-form-field>
-          <sui-form-field>
-            <sui-input type="password" placeholder="Password" />
-          </sui-form-field>
-          <sui-form-field>
-            <sui-dropdown
-              placeholder="Gender"
-              selection
-              :options="options"
-              v-model="current"
-            />
-          </sui-form-field>
-
-          <sui-button size="large" fluid>Join</sui-button>
-        </sui-segment>
-      </sui-form>
-      <sui-message>Already on Mynd? <a @click="toggle">Login</a></sui-message>
-    </sui-modal>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 export default {
   name: "Head",
   data() {
@@ -93,6 +73,8 @@ export default {
         identifier: "",
         password: ""
       },
+      u:
+        "http://localhost:1337/uploads/small_https_external_content_duckduckgo_com_iu_u_https_3_A_2_F_2_Fcdn_pixabay_com_2_Fphoto_2_F2015_2_F10_2_F05_2_F22_2_F37_2_Fblank_profile_picture_973460_960_720_560a0c313e.png",
       join: false,
       login: false,
       current: null,
@@ -108,6 +90,9 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapGetters(["isAuthenticated", "loggedInUser"])
+  },
   methods: {
     async signin() {
       const data = {
@@ -117,6 +102,7 @@ export default {
       const res = await axios.post("http://localhost:1337/auth/local", data);
       if (res.data.jwt) {
         localStorage.setItem("authToken", res.data.jwt);
+        
         this.$store.commit("user/login", res.data.user);
         this.login = !this.login;
       }
@@ -130,6 +116,15 @@ export default {
     toggle() {
       this.join = !this.join;
       this.login = !this.login;
+    },
+    reUser() {
+      this.$router.push("/" + loggedInUser.id);
+    },
+    logout() {
+        localStorage.setItem("authToken", null);
+        this.$store.commit("logout");
+        this.login = false;
+        this.$router.push('/login')
     }
   }
 };
@@ -150,5 +145,10 @@ export default {
 a {
   color: #5a4fdc;
   cursor: pointer;
+}
+.avt {
+  margin-right: 10px;
+  margin-top: 2px;
+  margin-left: 10px;
 }
 </style>

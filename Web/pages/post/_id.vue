@@ -18,9 +18,9 @@
               "
             />
             <sui-comment-content>
-              <a is="sui-comment-author" href="/">{{
+              <nuxt-link is="sui-comment-author" to="/">{{
                 comment.user.username
-              }}</a>
+              }}</nuxt-link>
               <sui-comment-metadata>
                 <div>{{ hrDate(comment.created_at) }}</div>
               </sui-comment-metadata>
@@ -29,13 +29,33 @@
             </sui-comment-content>
           </sui-comment>
 
-          <sui-form reply>
-            <textarea rows="2" class="pri"></textarea>
+          <sui-comment v-for="comment in comments" :key="comment.id">
+            <sui-comment-avatar
+              :src="
+                'http://localhost:1337' +
+                  loggedInUser.profile_img.formats.thumbnail.url
+              "
+            />
+            <sui-comment-content>
+              <nuxt-link is="sui-comment-author" to="/">{{
+                loggedInUser.username
+              }}</nuxt-link>
+              <sui-comment-metadata>
+                <div>{{ hrDate(comment.created_at) }}</div>
+              </sui-comment-metadata>
+              <sui-comment-text> {{ comment.text }}</sui-comment-text>
+              <sui-comment-actions> </sui-comment-actions>
+            </sui-comment-content>
+          </sui-comment>
+
+          <sui-form>
+            <textarea rows="2" v-model="text" class="pri"></textarea>
 
             <sui-button
               content="Add Reply"
               label-position="left"
               icon="edit"
+              @click.prevent="reply()"
               primary
               class="pri"
             />
@@ -45,18 +65,24 @@
         <sui-rail position="right">
           <sui-segment>
             <div>
-              <a :href="'/' + post.user.id">
+              <nuxt-link :to="'/' + post.user.id">
                 <sui-image
-                  :src="
-                    'http://localhost:1337' +
-                      post.user.profile_img.formats.thumbnail.url
-                  "
+                  :style="{
+                    overflow: 'hidden',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundImage:
+                      'url(http://localhost:1337' +
+                        post.user.profile_img.formats.thumbnail.url ||
+                      '/uploads/_07348acc6e.png?91490' + ')'
+                  }"
+                  src=""
                   avatar
                 />
-              </a>
-              <a class="paut" :href="'/' + post.user.id">
+              </nuxt-link>
+              <nuxt-link class="paut" :to="'/' + post.user.id">
                 {{ post.user.username }}
-              </a>
+              </nuxt-link>
             </div>
             <div text-align="left" class="details">
               <b>Description</b>
@@ -65,23 +91,25 @@
               </p>
             </div>
             <div class="tags">
-              <a
+              <nuxt-link
                 v-for="topic in post.topics"
+                to="/"
                 :key="topic.id"
                 is="sui-label"
                 tag
               >
                 {{ topic.title }}
-              </a>
+              </nuxt-link>
             </div>
             <div class="likes">
-              <sui-icon slot="trigger" name="heart" color="red" size="large" />
-              {{ likesLen(post) }}
+              <sui-feed-like>
+                <sui-icon name="like" @click="like()" :class="{ red: l }" />
+                <span> {{ likesLen(post) + l }} Likes </span>
+              </sui-feed-like>
             </div>
           </sui-segment>
         </sui-rail>
       </sui-grid-column>
-
     </sui-grid>
   </div>
 </template>
@@ -89,21 +117,49 @@
 <script>
 import gql from "graphql-tag";
 import moment from "moment";
-
+import { mapMutations, mapGetters } from "vuex";
+import axios from "axios";
 export default {
   data() {
     return {
       id: this.$route.params.id,
+      l: 0,
+      cid: 3746,
+      text: "",
+      comments: []
     };
   },
   components: {},
   methods: {
+    async reply() {
+      if (!this.isAuthenticated) this.$router.push("/login");
+      else {
+        let comment = {
+          text: this.text,
+          user: this.loggedInUser.id,
+          post: this.id
+        };
+        let c = await axios.post("http://localhost:1337/comments", comment);
+        this.comments.push(c);
+        this.text = "";
+      }
+    },
     likesLen(l) {
       return l.likes.length;
     },
     hrDate(d) {
       return moment(d).fromNow();
+    },
+    like() {
+      if (!this.isAuthenticated) this.$router.push("/login");
+      else {
+        if (this.l == 0) this.l = 1;
+        else this.l = 0;
+      }
     }
+  },
+  computed: {
+    ...mapGetters(["isAuthenticated", "loggedInUser"])
   },
   apollo: {
     post: {
